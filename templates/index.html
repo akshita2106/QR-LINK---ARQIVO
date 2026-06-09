@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Link Generator — Arqivo</title>
+  <meta name="description" content="Upload raw Excel data, auto-generate verification URLs and push them to HoverCode for QR code generation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ HEADER ══ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <circle cx="17.5" cy="17.5" r="2.5"/>
+        </svg>
+      </div>
+      <span class="logo-text">QR<span class="accent">Link</span></span>
+    </div>
+    <div class="header-badge">Arqivo Verify Platform</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════ MAIN ═══ -->
+<main class="main">
+
+  <!-- ─── HERO ─────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <h1 class="hero-title">QR Link Generator</h1>
+    <p class="hero-subtitle">Upload raw product data · Extract URLs · Push to HoverCode</p>
+  </section>
+
+  <!-- ─── STEP 1: UPLOAD ───────────────────────────────── -->
+  <section class="card" id="upload-section">
+    <div class="card-header">
+      <div class="step-badge">01</div>
+      <div>
+        <h2 class="card-title">Upload Raw Data</h2>
+        <p class="card-desc">Drag &amp; drop or click to select Excel files (.xlsx)</p>
+      </div>
+    </div>
+
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept=".xlsx,.xls" multiple hidden />
+      <div class="drop-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <p class="drop-label">Drop files here, or <span class="link-text">browse</span></p>
+      <p class="drop-hint">Supports .xlsx and .xls files</p>
+      <div id="file-list" class="file-list"></div>
+    </div>
+
+    <button class="btn btn-primary" id="process-btn" disabled>
+      <span class="btn-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 3l14 9-14 9V3z"/>
+        </svg>
+      </span>
+      Process Files
+    </button>
+  </section>
+
+  <!-- ─── PROCESSING OVERLAY ───────────────────────────── -->
+  <div class="loading-overlay" id="loading-overlay" style="display:none">
+    <div class="spinner"></div>
+    <p class="loading-text">Processing your data…</p>
+  </div>
+
+  <!-- ─── STEP 2: RESULTS ──────────────────────────────── -->
+  <section class="card hidden" id="results-section">
+    <div class="card-header">
+      <div class="step-badge">02</div>
+      <div>
+        <h2 class="card-title">Processed Results</h2>
+        <p class="card-desc">Review the extracted product data and generated URLs</p>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row" id="stats-row"></div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table class="data-table" id="data-table">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn btn-success" id="download-btn">
+        <span class="btn-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </span>
+        Save Processed File
+      </button>
+
+      <button class="btn btn-accent" id="automate-btn">
+        <span class="btn-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </span>
+        Push to HoverCode
+      </button>
+    </div>
+  </section>
+
+  <!-- ─── STEP 3: AUTOMATION STATUS ───────────────────── -->
+  <section class="card hidden" id="automation-section">
+    <div class="card-header">
+      <div class="step-badge">03</div>
+      <div>
+        <h2 class="card-title">HoverCode Automation</h2>
+        <p class="card-desc">Selenium is automating QR code creation in HoverCode</p>
+      </div>
+    </div>
+
+    <div class="automation-status" id="automation-status">
+      <div class="status-dot running"></div>
+      <span id="status-text">Opening browser… Please log in to HoverCode when prompted.</span>
+    </div>
+
+    <div class="log-box" id="log-box">
+      <p class="log-placeholder">Automation logs will appear here…</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── TOAST ─────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
