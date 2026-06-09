@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # QR-LINK — ARQIVO
 
 Automated QR code generation and management tool for [HoverCode](https://hovercode.com), integrated with [Arqivo](https://www.arqivo.com) verification links.
@@ -135,3 +136,6 @@ https://www.arqivo.com/verify/<product-slug>
 ## License
 
 This project is for internal use.
+=======
+# QR-LINK---ARQIVO
+>>>>>>> 69a6dcc822c7a816d8e95ad6a588beeb0bb34350
